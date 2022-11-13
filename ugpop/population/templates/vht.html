@@ -1,0 +1,247 @@
+
+  
+    {% load static %}
+    {% load crispy_forms_tags %}
+    {% block content %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'toastr/toastr.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/buttons.dataTables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
+    <title>VHT Datatable</title>
+    <style>
+      body{
+        background-color: lightblue;
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+      }
+      
+      li {
+        float: left;
+      }
+      
+      li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      
+      li a:hover:not(.active) {
+        background-color: rgb(29, 154, 185);
+      }
+      
+      .active {
+        background-color: #04AA6D;
+      }
+      </style>
+</head>
+
+<body class="container">
+  <ul>
+    <li><a  href="{% url 'index_page' %}">Home</a></li>
+    <li><a href="{% url 'people_page' %}">People</a></li>
+    <li><a href="{% url 'birth_page' %}">Birth</a></li>
+    <li><a href="{% url 'death_page' %}">Death</a></li>
+    <li><a href="{% url 'login' %}">logout</a></li>
+  </ul>
+<h1 class="text-center"> VHT DataTable</h1>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Add New VHT
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add VHT</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <center>
+          <form method="POST" >
+          {% csrf_token %}
+          {{ vht_form|crispy }}
+          <br>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary btn-md ">save</button>
+          <br><br>
+          <section class="content">
+            
+            <!-- Content Block -->
+            <!--
+            {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="alert alert-{{message.tags }}"{% endif %}>
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+              {{ message }}
+              </li>
+              {% endfor %}
+            </ul> 
+            {% endif %}
+            -->
+            <!-- /.Content Block -->
+          </section>
+          <br>
+          </form>
+          </center>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+  
+<table id="maintable" class="display compact cell-border" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>VHT_NO</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>DOB</th>
+        <th>Phone Number</th>
+        <th>E-mail Address</th>
+     
+        <th>Region</th>
+        <th>District</th>
+        <th>Constitutuency</th>
+        <th>Sub-County</th>
+        <th>Parish or Parish_or_Ward</th>
+        <th>Village_or_Zone</th>
+        
+        <th>Action</th>
+
+    </tr>
+    </thead>
+    <tbody>
+        {% for vht in get_vhts %}
+    <tr>
+        <td>{{vht.VHTIDN}}</td>
+        <td> {{ vht.First_Name }}</td>
+        <td>{{ vht.Middle_Name}}</td>
+        <td>{{vht.Last_Name}}</td>
+        <td> {{ vht.Gender}}</td>
+        <td> {{ vht.DOB}}</td>
+        <td> {{ vht.Phone_Number}}</td>
+        <td> {{ vht.Email_Address}}</td>
+        
+        <td> {{ vht.Region}}</td>
+        <td> {{ vht.District}}</td>
+        <td>{{ vht.Constitutuency}}</td>
+        <td>{{ vht.SubCounty}}</td>
+        <td>{{ vht.Parish_or_Ward}}</td>
+        <td>{{ vht.Village_or_Zone}}</td>
+        
+        <td>
+          <a href="{% url 'vht_edit' vht.id %}" style="color:inherit">
+            <i class="fa-solid fa-pen-to-square"><img src="{% static 'edit.png' %}" width="20px" height="20px"></i>
+        </a> |
+        <a href="{% url 'delete_VHT' vht.id %}" style="color: inherit">
+            <i class="fa fa-trash"><img src="{% static 'del.jpg' %}" width="20px" height="20px"></i>
+        </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot style="background-color: #c0c0c0; color: #ffffff; font-size: 0.9em; ">
+    <tr>
+            
+      <th>VHT_NO</th>
+      <th>First Name</th>
+      <th>Middle Name</th>
+      <th>Last Name</th>
+      <th>Gender</th>
+      <th>DOB</th>
+      <th>Phone Number</th>
+      <th>E-mail Address</th>
+      
+      <th>Region</th>
+      <th>District</th>
+      <th>Constitutuency</th>
+      <th>Sub-County</th>
+      <th>Parish or Parish_or_Ward</th>
+      <th>Village_or_Zone</th>
+      
+      <th>Action</th>
+
+    </tr>
+    </tfoot>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script src="{% static 'toastr/toastr.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/dataTables.buttons.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jszip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/pdfmake.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vfs_fonts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/buttons.html5.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/buttons.print.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.mark.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datatables.mark.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/buttons.colVis.min.js' %}"></script>
+
+
+<script src="{% static 'faddy/plugins/toastr/toastr.min.js' %}"></script>
+  
+
+
+
+
+
+<footer>
+  <!-- Footer -->
+  <footer class="text-center text-white" style="background-color: #0a4275;">
+   
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      Ug Population 2022
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
+</footer>
+<div class="bg-success">
+{% if messages %}
+  {% for message in messages %}
+  <script type=text/javascript>
+    toastr.options.progressBar = true;
+    toastr.{{ message.tags }}('{{ message }}')
+  </script>
+  {% endfor %}
+  {% endif %}
+  </div>
+</body>
+
+  
+</html>
+{% endblock %}
