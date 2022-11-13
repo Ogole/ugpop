@@ -240,7 +240,7 @@ def birth_report(request):
 #death page
 
 @login_required(login_url='login')
-#@user_passes_test(lambda u: u.groups.filter(name='death').exists(),login_url='login') 
+@user_passes_test(lambda u: u.groups.filter(name='death').exists(),login_url='login') 
 def death_page(request):
     get_deads = get_deaths()
     death_form= DeathForm()
